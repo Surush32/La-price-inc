@@ -81,10 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render services
     const servicesGrid = document.querySelector('.services-grid');
     if (servicesGrid) {
-        services.forEach((service, index) => {
+        services.forEach(service => {
             const serviceCard = document.createElement('div');
-            serviceCard.className = 'service-card animate-fade-in-up';
-            serviceCard.style.animationDelay = `${index * 0.1}s`;
+            serviceCard.className = 'service-card';
             serviceCard.innerHTML = `
                 <div class="service-icon">${service.icon}</div>
                 <h3 class="service-title">${service.title}</h3>
@@ -92,68 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             servicesGrid.appendChild(serviceCard);
         });
-    }
-
-    // Intersection Observer for animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '50px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.animate-fade-in-up, .animate-fade-in, .animate-slide-in-left, .animate-slide-in-right, .animate-scale-in').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        observer.observe(el);
-    });
-
-    // Parallax effect for hero section
-    const heroContent = document.querySelector('.hero-content');
-    if (heroContent) {
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            heroContent.style.transform = `translateY(${scrolled * 0.5}px)`;
-        });
-    }
-
-    // Animate numbers in about section
-    function animateValue(obj, start, end, duration) {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            obj.innerHTML = Math.floor(progress * (end - start) + start);
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            }
-        };
-        window.requestAnimationFrame(step);
-    }
-
-    const statsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const statsElements = entry.target.querySelectorAll('.stat-number');
-                statsElements.forEach(el => {
-                    animateValue(el, 0, parseInt(el.getAttribute('data-target')), 2000);
-                });
-                statsObserver.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    const statsSection = document.querySelector('.stats-section');
-    if (statsSection) {
-        statsObserver.observe(statsSection);
     }
 
     // Smooth scroll for navigation links
@@ -192,3 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
